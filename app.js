@@ -12,7 +12,7 @@ const {graphqlHTTP} = require('express-graphql');
 //passport config:
 require('./config/passport')(passport)
 //mongoose
-mongoose.connect('mongodb://localhost/test',{useNewUrlParser: true, useUnifiedTopology : true})
+mongoose.connect('mongodb://localhost/soccer_manager',{useNewUrlParser: true, useUnifiedTopology : true})
 .then(() => console.log('connected,,'))
 .catch((err)=> console.log(err));
 
