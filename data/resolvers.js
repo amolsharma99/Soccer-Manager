@@ -1,13 +1,14 @@
+const Player = require("./player");
 const Team = require("./team");
 const User = require("./user");
 
 //resolver map
-const resolvers = { 
+const resolvers = {
     Query: {
-        getOneUser:(root, {id}) => {
+        getOneUser: (root, { id }) => {
             return new Promise((resolve, object) => {
                 User.findById(id, (err, user) => {
-                    if(err) reject(err)
+                    if (err) reject(err)
                     else resolve(user)
                 })
             })
@@ -15,7 +16,7 @@ const resolvers = {
     },
     Mutation: {
         //Create Default Team
-        createTeam : (root, {userId}) => {
+        createTeam: (root, { userId }) => {
 
             //TODO: check if team already exists for userID
 
@@ -26,9 +27,9 @@ const resolvers = {
                 budget: 5000000
             })
 
-            return new Promise((resolve, object) => {
+            new Promise((resolve, object) => {
                 newTeam.save((err) => {
-                    if(err) reject(err)
+                    if (err) reject(err)
                     else resolve(newTeam)
                 })
             })
@@ -38,7 +39,27 @@ const resolvers = {
             // 6 Defenders
             // 6 Midfielders
             // 5 Attackers
-        }        
+            const players = [];
+            for (var i = 0; i < 20; i++) {
+                const newPlayer = new Player({
+                    firstName: "abc",
+                    lastName: "xyz",
+                    playerType: "MIDFIELDER",
+                    country: "India",
+                    age: 30,
+                    value: 100000,
+                    teamId: newTeam._id
+                })
+
+                new Promise((resolve, object) => {
+                    newPlayer.save((err) => {
+                        if (err) reject(err)
+                        else resolve(newPlayer)
+                    })
+                })
+            }
+            return newTeam
+        }
     }
 };
 

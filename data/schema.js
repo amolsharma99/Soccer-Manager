@@ -17,10 +17,18 @@ const typeDefs = `
         budget: Int
     }
 
+    enum PlayerType {
+        GOALKEEPER
+        DEFENDER
+        MIDFIELDER
+        ATTACKER
+    }
+
     type Player {
         id: ID
         firstName: String
         lastName: String
+        playerType: PlayerType
         country: String
         age: Int
         value: Int
@@ -37,7 +45,7 @@ const typeDefs = `
     }
 
     type Mutation {
-        createTeam(id: ID!): Team
+        createTeam(userid: ID!): Team
     }
 
 `;

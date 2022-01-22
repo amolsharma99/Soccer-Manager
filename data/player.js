@@ -7,16 +7,20 @@ const PlayerSchema = new mongoose.Schema({
     lastName: {
         type: String
     },
+    playerType:{
+        type: String,
+        required: true
+    },
     country: {
         type: String,
         required: true
     },
     age: {
-        type: Int,
+        type: Number,
         required: true
     },
     value: {
-        type: Int,
+        type: Number,
         required: true
     },
     teamId: {

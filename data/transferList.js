@@ -5,7 +5,7 @@ const TransferListSchema = new mongoose.Schema({
         required: true
     },
     askPrice: {
-        type: Int,
+        type: Number,
         required: true
     }
 });
