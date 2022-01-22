@@ -82,10 +82,14 @@ const resolvers = {
                     if (err) reject(err)
                     else resolve(newTeam)
                 })
+            }).then(newTeam => {
+                new Promise((resolve, reject) => {
+                    User.findOneAndUpdate({ _id: userId }, { "teamId": newTeam._id }, { new: true }, (err, user) => {
+                        if (err) reject(err)
+                        else resolve(user)
+                    })
+                })
             })
-            //TODO: Update User with Team Id
-
-
 
             //Create 20 Players with Above Team Id
             // 3 GK
