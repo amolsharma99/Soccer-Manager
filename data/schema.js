@@ -40,8 +40,14 @@ const typeDefs = `
         askPrice: Int
     }
 
+    type ViewTeamOutput{
+        team: Team
+        players: [Player]
+    }
+
     type Query {
         getOneUser(id: ID): User
+        viewTeam(id: ID): ViewTeamOutput
     }
 
     type Mutation {

@@ -12,6 +12,28 @@ const resolvers = {
                     else resolve(user)
                 })
             })
+        },
+
+        viewTeam: (root, { id }) => {
+
+            const team = new Promise((resolve, object) => {
+                Team.findById(id, (err, team) => {
+                    if (err) reject(err)
+                    else resolve(team)
+                })
+            })
+
+            const players = new Promise((resolve, object) => {
+                Player.find({ teamId: id }, (err, players) => {
+                    if (err) reject(err)
+                    else resolve(players)
+                })
+            })
+
+            return {
+                "team": team,
+                "players": players
+            };
         }
     },
     Mutation: {
