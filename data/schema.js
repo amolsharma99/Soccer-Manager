@@ -45,6 +45,11 @@ const typeDefs = `
         players: [Player]
     }
 
+    type PlayerWithAskPriceView{
+        player: Player
+        askPrice: Int
+    }
+
     input OfferTransferInput{
         playerId: ID
         askPrice: Int
@@ -58,6 +63,7 @@ const typeDefs = `
     type Query {
         getOneUser(id: ID): User
         viewTeam(id: ID): ViewTeamOutput
+        viewTransferList: [PlayerWithAskPriceView]
     }
 
     type Mutation {

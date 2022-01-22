@@ -35,6 +35,29 @@ const resolvers = {
                 "team": team,
                 "players": players
             };
+        },
+
+        viewTransferList: (root) => {
+            return new Promise((resolve, reject) => {
+                TransferList.find({},(err, offers) => {
+                    if (err) reject(err)
+                    else resolve(offers)
+                })
+            }).then(offers => {
+                var response = [];
+                offers.forEach(element => {
+                    const player = new Promise((resolve, reject) => {
+                        Player.findOne({ _id: element.playerId }, (err, player) => {
+                            if (err)
+                                reject(err)
+                            else
+                                resolve(player)
+                        })
+                    });
+                    response.push({"player": player, "askPrice": element.askPrice});
+                });
+                return response;
+            })
         }
     },
     Mutation: {
@@ -62,7 +85,6 @@ const resolvers = {
             // 6 Defenders
             // 6 Midfielders
             // 5 Attackers
-            const players = [];
             for (var i = 0; i < 20; i++) {
                 const newPlayer = new Player({
                     firstName: "abc",
