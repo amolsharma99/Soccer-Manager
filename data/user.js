@@ -11,6 +11,9 @@ const UserSchema = new mongoose.Schema({
     password: {
         type: String,
         required: true
+    },
+    teamId: {
+        type: String
     }
 });
 const User = mongoose.model('User', UserSchema);
