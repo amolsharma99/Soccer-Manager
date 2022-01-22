@@ -1,12 +1,13 @@
 const Player = require("./player");
 const Team = require("./team");
+const TransferList = require("./transferList");
 const User = require("./user");
 
 //resolver map
 const resolvers = {
     Query: {
         getOneUser: (root, { id }) => {
-            return new Promise((resolve, object) => {
+            return new Promise((resolve, reject) => {
                 User.findById(id, (err, user) => {
                     if (err) reject(err)
                     else resolve(user)
@@ -16,14 +17,14 @@ const resolvers = {
 
         viewTeam: (root, { id }) => {
 
-            const team = new Promise((resolve, object) => {
+            const team = new Promise((resolve, reject) => {
                 Team.findById(id, (err, team) => {
                     if (err) reject(err)
                     else resolve(team)
                 })
             })
 
-            const players = new Promise((resolve, object) => {
+            const players = new Promise((resolve, reject) => {
                 Player.find({ teamId: id }, (err, players) => {
                     if (err) reject(err)
                     else resolve(players)
@@ -49,7 +50,7 @@ const resolvers = {
                 budget: 5000000
             })
 
-            new Promise((resolve, object) => {
+            new Promise((resolve, reject) => {
                 newTeam.save((err) => {
                     if (err) reject(err)
                     else resolve(newTeam)
@@ -73,7 +74,7 @@ const resolvers = {
                     teamId: newTeam._id
                 })
 
-                new Promise((resolve, object) => {
+                new Promise((resolve, reject) => {
                     newPlayer.save((err) => {
                         if (err) reject(err)
                         else resolve(newPlayer)
@@ -81,7 +82,47 @@ const resolvers = {
                 })
             }
             return newTeam
+        },
+
+        offerTransfer: (root, { input }) => {
+            //TODO: check if valid Player
+            return new Promise((resolve, reject) => {
+                TransferList.findOneAndUpdate({ playerId: input.playerId }, { "playerId": input.playerId, "askPrice": input.askPrice }, { new: true, upsert: true }, (err, transferListEntry) => {
+                    if (err) reject(err)
+                    else resolve(transferListEntry)
+                })
+            })
+        },
+
+        buyPlayer: (root, { input }) => {
+            const player = new Promise((resolve, reject) => {
+                //Update TeamId for Player
+                Player.findOneAndUpdate({ _id: input.playerId }, { "teamId": input.teamId }, (err, player) => {
+                    if (err)
+                        reject(err)
+                    else
+                        resolve(player)
+                })
+            }).then(player => {
+                new Promise((resolve, reject) => {
+                    //Update Player Value
+                    Player.findOneAndUpdate({ "_id": input.playerId }, { "value": player.value * 1.2 }, (err, updatedPlayer) => {
+                        if (err) reject(err)
+                        else resolve("Updated Player Value")
+                    })
+                })
+            })
+
+            new Promise((resolve, reject) => {
+                //Remove Player from Transfer List
+                TransferList.remove({ playerId: input.playerId }, (err) => {
+                    if (err) reject(err)
+                    else resolve("Purchased Player")
+                })
+            })
+            return "Purchased Player"
         }
+
     }
 };
 

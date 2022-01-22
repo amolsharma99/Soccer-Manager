@@ -45,13 +45,25 @@ const typeDefs = `
         players: [Player]
     }
 
+    input OfferTransferInput{
+        playerId: ID
+        askPrice: Int
+    }
+
+    input BuyPlayerInput{
+        playerId: ID
+        teamId: ID
+    }
+
     type Query {
         getOneUser(id: ID): User
         viewTeam(id: ID): ViewTeamOutput
     }
 
     type Mutation {
-        createTeam(userid: ID!): Team
+        createTeam(userId: ID!): Team
+        offerTransfer(input: OfferTransferInput): TransferList
+        buyPlayer(input: BuyPlayerInput): String
     }
 
 `;
