@@ -25,15 +25,22 @@ const resolvers = {
                 })
             })
 
+            teamValue = 0;
             const players = new Promise((resolve, reject) => {
                 Player.find({ teamId: id }, (err, players) => {
                     if (err) reject(err)
                     else resolve(players)
                 })
+            }).then(players => {
+                players.forEach(player => {
+                    teamValue += player.value
+                    console.log(teamValue)
+                })
             })
-
+            
             return {
                 "team": team,
+                "teamValue": teamValue,
                 "players": players
             };
         },

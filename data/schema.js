@@ -42,6 +42,7 @@ const typeDefs = `
 
     type ViewTeamOutput{
         team: Team
+        teamValue: Int
         players: [Player]
     }
 
