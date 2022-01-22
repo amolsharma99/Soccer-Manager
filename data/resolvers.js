@@ -95,11 +95,23 @@ const resolvers = {
             for (var i = 0; i < 20; i++) {
                 const playerFirstName = uniqueNamesGenerator({ dictionaries: [starWars] }); 
                 const playerLastName = uniqueNamesGenerator({ dictionaries: [animals] }); 
-                const playerCountry = uniqueNamesGenerator({ dictionaries: [countries] }) 
+                const playerCountry = uniqueNamesGenerator({ dictionaries: [countries] });
+                const playerSkillType = (() => {
+                    switch(true){
+                        case (i < 3):
+                            return "GOALKEEPER";
+                        case (i < 9):
+                            return "DEFENDER";
+                        case (i < 15):
+                            return "MIDFIELDER";
+                        default:
+                            return "ATTACKER";
+                    }
+                  })();
                 const newPlayer = new Player({
                     firstName: playerFirstName,
                     lastName: playerLastName,
-                    playerType: "MIDFIELDER",
+                    playerType: playerSkillType,
                     country: playerCountry,
                     age: 30,
                     value: 100000,
