@@ -2,7 +2,7 @@ const Player = require("./player");
 const Team = require("./team");
 const TransferList = require("./transferList");
 const User = require("./user");
-const {uniqueNamesGenerator, adjectives, colors, names, countries, starWars, animals} = require('unique-names-generator');
+const {uniqueNamesGenerator, adjectives, colors, names, countries, starWars, animals, NumberDictionary} = require('unique-names-generator');
 
 //resolver map
 const resolvers = {
@@ -96,6 +96,8 @@ const resolvers = {
                 const playerFirstName = uniqueNamesGenerator({ dictionaries: [starWars] }); 
                 const playerLastName = uniqueNamesGenerator({ dictionaries: [animals] }); 
                 const playerCountry = uniqueNamesGenerator({ dictionaries: [countries] });
+                const numberDictionary = NumberDictionary.generate({ min: 15, max: 45 });
+                const playerAge = uniqueNamesGenerator({ dictionaries: [numberDictionary] }); 
                 const playerSkillType = (() => {
                     switch(true){
                         case (i < 3):
@@ -113,7 +115,7 @@ const resolvers = {
                     lastName: playerLastName,
                     playerType: playerSkillType,
                     country: playerCountry,
-                    age: 30,
+                    age: playerAge,
                     value: 100000,
                     teamId: newTeam._id
                 })
