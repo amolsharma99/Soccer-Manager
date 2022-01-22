@@ -128,12 +128,13 @@ const resolvers = {
             }).then(player => {
                 new Promise((resolve, reject) => {
                     //Update Player Value
-                    Player.findOneAndUpdate({ "_id": input.playerId }, { "value": player.value * 1.2 }, (err, updatedPlayer) => {
+                    Player.findOneAndUpdate({ "_id": input.playerId }, { "value": Math.round(player.value * (1.1 + Math.random()*0.9)) }, (err, updatedPlayer) => {
                         if (err) reject(err)
                         else resolve("Updated Player Value")
                     })
                 })
             })
+            //TODO: Update Budget of both the teams
 
             new Promise((resolve, reject) => {
                 //Remove Player from Transfer List
