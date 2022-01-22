@@ -39,7 +39,7 @@ const resolvers = {
 
         viewTransferList: (root) => {
             return new Promise((resolve, reject) => {
-                TransferList.find({},(err, offers) => {
+                TransferList.find({}, (err, offers) => {
                     if (err) reject(err)
                     else resolve(offers)
                 })
@@ -54,7 +54,7 @@ const resolvers = {
                                 resolve(player)
                         })
                     });
-                    response.push({"player": player, "askPrice": element.askPrice});
+                    response.push({ "player": player, "askPrice": element.askPrice });
                 });
                 return response;
             })
@@ -117,6 +117,11 @@ const resolvers = {
         },
 
         buyPlayer: (root, { input }) => {
+            //TODO: Validations
+            //1. Does the buying team have enough budget
+            //2. playerId is valid.
+            //3. Player is available for buying from the transferList
+
             const player = new Promise((resolve, reject) => {
                 //Update TeamId for Player
                 Player.findOneAndUpdate({ _id: input.playerId }, { "teamId": input.teamId }, (err, player) => {
@@ -127,20 +132,51 @@ const resolvers = {
                 })
             }).then(player => {
                 new Promise((resolve, reject) => {
-                    //Update Player Value
-                    Player.findOneAndUpdate({ "_id": input.playerId }, { "value": Math.round(player.value * (1.1 + Math.random()*0.9)) }, (err, updatedPlayer) => {
+                    //Update Player Value Randomly
+                    Player.findOneAndUpdate({ _id: input.playerId }, { "value": Math.round(player.value * (1.1 + Math.random() * 0.9)) }, (err, updatedPlayer) => {
                         if (err) reject(err)
                         else resolve("Updated Player Value")
                     })
-                })
-            })
-            //TODO: Update Budget of both the teams
 
-            new Promise((resolve, reject) => {
-                //Remove Player from Transfer List
-                TransferList.remove({ playerId: input.playerId }, (err) => {
-                    if (err) reject(err)
-                    else resolve("Purchased Player")
+                    new Promise((resolve, reject) => {
+                        TransferList.findOne({ playerId: input.playerId }, (err, transferEntry) => {
+                            if (err) reject(err)
+                            else resolve(transferEntry)
+                        }).then(transferEntry => {
+                            //Increment Budget of Current Team by Ask Price. Note teamId points to old team.
+                            new Promise((resolve, reject) => {
+                                Team.findOne({ _id: player.teamId }, (err, team) => {
+                                    if (err) reject(err)
+                                    else resolve(team)
+                                })
+                            }).then(team => {
+                                Team.findOneAndUpdate({ _id: player.teamId }, {budget: team.budget + transferEntry.askPrice}, (err, updatedTeam) => {
+                                    if (err) reject(err)
+                                    else resolve(updatedTeam)
+                                })
+                            })
+                            //Decrement Budget of Current Team by Ask Price
+                            new Promise((resolve, reject) => {
+                                Team.findOne({ _id: input.teamId }, (err, team) => {
+                                    if (err) reject(err)
+                                    else resolve(team)
+                                })
+                            }).then(team => {
+                                Team.findOneAndUpdate({ _id: input.teamId }, {budget: team.budget - transferEntry.askPrice}, (err, updatedTeam) => {
+                                    if (err) reject(err)
+                                    else resolve(updatedTeam)
+                                })
+                            })
+                        })
+                    })
+                })
+            }).then(object => {
+                new Promise((resolve, reject) => {
+                    //Remove Player from Transfer List
+                    TransferList.remove({ playerId: input.playerId }, (err) => {
+                        if (err) reject(err)
+                        else resolve("Purchased Player")
+                    })
                 })
             })
             return "Purchased Player"
