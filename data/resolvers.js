@@ -2,6 +2,7 @@ const Player = require("./player");
 const Team = require("./team");
 const TransferList = require("./transferList");
 const User = require("./user");
+const {uniqueNamesGenerator, adjectives, colors, names, countries, starWars, animals} = require('unique-names-generator');
 
 //resolver map
 const resolvers = {
@@ -66,10 +67,13 @@ const resolvers = {
 
             //TODO: check if team already exists for userID
 
+            const teamName = uniqueNamesGenerator({ dictionaries: [adjectives, colors, names] }); 
+            const teamCountry = uniqueNamesGenerator({ dictionaries: [countries] });
+
             //Create Team
             const newTeam = new Team({
-                name: "Some Team Name",
-                country: "UK",
+                name: teamName,
+                country: teamCountry,
                 budget: 5000000
             })
 
@@ -79,6 +83,9 @@ const resolvers = {
                     else resolve(newTeam)
                 })
             })
+            //TODO: Update User with Team Id
+
+
 
             //Create 20 Players with Above Team Id
             // 3 GK
@@ -86,11 +93,14 @@ const resolvers = {
             // 6 Midfielders
             // 5 Attackers
             for (var i = 0; i < 20; i++) {
+                const playerFirstName = uniqueNamesGenerator({ dictionaries: [starWars] }); 
+                const playerLastName = uniqueNamesGenerator({ dictionaries: [animals] }); 
+                const playerCountry = uniqueNamesGenerator({ dictionaries: [countries] }) 
                 const newPlayer = new Player({
-                    firstName: "abc",
-                    lastName: "xyz",
+                    firstName: playerFirstName,
+                    lastName: playerLastName,
                     playerType: "MIDFIELDER",
-                    country: "India",
+                    country: playerCountry,
                     age: 30,
                     value: 100000,
                     teamId: newTeam._id
