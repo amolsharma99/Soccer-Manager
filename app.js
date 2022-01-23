@@ -20,8 +20,8 @@ mongoose.connect('mongodb://localhost/soccer_manager',{useNewUrlParser: true, us
 app.set('view engine','ejs');
 app.use(expressEjsLayout);
 //BodyParser
-// Disabled to get Graphiql Working
-// app.use(express.urlencoded({extended : false}));
+//NOTE: Disable to get Graphiql Working
+app.use(express.urlencoded({extended : false}));
 //express session
 app.use(session({
     secret : 'secret',
