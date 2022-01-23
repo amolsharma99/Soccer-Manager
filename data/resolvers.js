@@ -41,7 +41,7 @@ const resolvers = {
                         "players": players
                     };
                 })
-            }) 
+            })
         },
 
         viewTransferList: (root) => {
@@ -71,14 +71,14 @@ const resolvers = {
         //Create Default Team
         createTeam: (root, { userId }) => {
 
-            new Promise((resolve, reject) => {
+            return new Promise((resolve, reject) => {
                 User.findOne({ _id: userId }, (err, user) => {
                     if (err) reject(err)
                     else resolve(user)
                 })
             }).then(user => {
                 //Throw Error if Team Already Exist for the User
-                if (user.teamId){
+                if (user.teamId) {
                     console.log("team " + user.teamId + " already exists for user " + userId);
                     return new Error("Team Already Exists for User");
                 }
@@ -93,7 +93,7 @@ const resolvers = {
                         budget: 5000000
                     })
 
-                    new Promise((resolve, reject) => {
+                    return new Promise((resolve, reject) => {
                         newTeam.save((err) => {
                             if (err) reject(err)
                             else resolve(newTeam)
@@ -105,66 +105,66 @@ const resolvers = {
                                 else resolve(user)
                             })
                         })
-                    })
-
-                    //Create 20 Players with Above Team Id
-                    // 3 GK
-                    // 6 Defenders
-                    // 6 Midfielders
-                    // 5 Attackers
-                    for (var i = 0; i < 20; i++) {
-                        const playerFirstName = uniqueNamesGenerator({ dictionaries: [starWars] });
-                        const playerLastName = uniqueNamesGenerator({ dictionaries: [animals] });
-                        const playerCountry = uniqueNamesGenerator({ dictionaries: [countries] });
-                        const numberDictionary = NumberDictionary.generate({ min: 15, max: 45 });
-                        const playerAge = uniqueNamesGenerator({ dictionaries: [numberDictionary] });
-                        const playerSkillType = (() => {
-                            switch (true) {
-                                case (i < 3):
-                                    return "GOALKEEPER";
-                                case (i < 9):
-                                    return "DEFENDER";
-                                case (i < 15):
-                                    return "MIDFIELDER";
-                                default:
-                                    return "ATTACKER";
-                            }
-                        })();
-                        const newPlayer = new Player({
-                            firstName: playerFirstName,
-                            lastName: playerLastName,
-                            playerType: playerSkillType,
-                            country: playerCountry,
-                            age: playerAge,
-                            value: 100000,
-                            teamId: newTeam._id
-                        })
-
-                        new Promise((resolve, reject) => {
-                            newPlayer.save((err) => {
-                                if (err) reject(err)
-                                else resolve(newPlayer)
+                    }).then(user => {
+                        //Create 20 Players with Above Team Id
+                        // 3 GK
+                        // 6 Defenders
+                        // 6 Midfielders
+                        // 5 Attackers
+                        for (var i = 0; i < 20; i++) {
+                            const playerFirstName = uniqueNamesGenerator({ dictionaries: [starWars] });
+                            const playerLastName = uniqueNamesGenerator({ dictionaries: [animals] });
+                            const playerCountry = uniqueNamesGenerator({ dictionaries: [countries] });
+                            const numberDictionary = NumberDictionary.generate({ min: 15, max: 45 });
+                            const playerAge = uniqueNamesGenerator({ dictionaries: [numberDictionary] });
+                            const playerSkillType = (() => {
+                                switch (true) {
+                                    case (i < 3):
+                                        return "GOALKEEPER";
+                                    case (i < 9):
+                                        return "DEFENDER";
+                                    case (i < 15):
+                                        return "MIDFIELDER";
+                                    default:
+                                        return "ATTACKER";
+                                }
+                            })();
+                            const newPlayer = new Player({
+                                firstName: playerFirstName,
+                                lastName: playerLastName,
+                                playerType: playerSkillType,
+                                country: playerCountry,
+                                age: playerAge,
+                                value: 100000,
+                                teamId: newTeam._id
                             })
-                        })
-                    }
-                    console.log(newTeam)
-                    return newTeam
+
+                            new Promise((resolve, reject) => {
+                                newPlayer.save((err) => {
+                                    if (err) reject(err)
+                                    else resolve(newPlayer)
+                                })
+                            })
+                        }
+                        console.log(newTeam)
+                        return newTeam
+                    })
                 }
             });
         },
 
-        updateTeam:(root, { input }) => {
+        updateTeam: (root, { input }) => {
             return new Promise((resolve, reject) => {
-                Team.findOneAndUpdate({ _id: input.teamId }, input.updatedFields, { new: true}, (err, updatedTeam) => {
+                Team.findOneAndUpdate({ _id: input.teamId }, input.updatedFields, { new: true }, (err, updatedTeam) => {
                     if (err) reject(err)
                     else resolve(updatedTeam)
                 })
             })
         },
 
-        updatePlayer:(root, { input }) => {
+        updatePlayer: (root, { input }) => {
             return new Promise((resolve, reject) => {
-                Player.findOneAndUpdate({ _id: input.playerId }, input.updatedFields, { new: true}, (err, updatedPlayer) => {
+                Player.findOneAndUpdate({ _id: input.playerId }, input.updatedFields, { new: true }, (err, updatedPlayer) => {
                     if (err) reject(err)
                     else resolve(updatedPlayer)
                 })
