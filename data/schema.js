@@ -61,6 +61,27 @@ const typeDefs = `
         teamId: ID
     }
 
+    input updateTeamFields{
+        name: String
+        country: String
+    }
+
+    input updateTeamInput{
+        teamId: ID
+        updatedFields: updateTeamFields
+    }
+
+    input updatePlayerFields{
+        firstName: String
+        lastName: String
+        country: String
+    }
+
+    input updatePlayerInput{
+        playerId: ID
+        updatedFields: updatePlayerFields
+    }
+
     type Query {
         getOneUser(id: ID): User
         viewTeam(id: ID): ViewTeamOutput
@@ -69,6 +90,8 @@ const typeDefs = `
 
     type Mutation {
         createTeam(userId: ID!): Team
+        updateTeam(input: updateTeamInput): Team
+        updatePlayer(input: updatePlayerInput): Player
         offerTransfer(input: OfferTransferInput): TransferList
         buyPlayer(input: BuyPlayerInput): String
     }

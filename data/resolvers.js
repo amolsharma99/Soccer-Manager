@@ -154,6 +154,24 @@ const resolvers = {
             });
         },
 
+        updateTeam:(root, { input }) => {
+            return new Promise((resolve, reject) => {
+                Team.findOneAndUpdate({ _id: input.teamId }, input.updatedFields, { new: true}, (err, updatedTeam) => {
+                    if (err) reject(err)
+                    else resolve(updatedTeam)
+                })
+            })
+        },
+
+        updatePlayer:(root, { input }) => {
+            return new Promise((resolve, reject) => {
+                Player.findOneAndUpdate({ _id: input.playerId }, input.updatedFields, { new: true}, (err, updatedPlayer) => {
+                    if (err) reject(err)
+                    else resolve(updatedPlayer)
+                })
+            })
+        },
+
         offerTransfer: (root, { input }) => {
             //TODO: check if valid Player
             return new Promise((resolve, reject) => {
