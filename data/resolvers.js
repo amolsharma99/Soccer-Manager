@@ -18,31 +18,30 @@ const resolvers = {
 
         viewTeam: (root, { id }) => {
 
-            const team = new Promise((resolve, reject) => {
+            teamValue = 0;
+            return new Promise((resolve, reject) => {
                 Team.findById(id, (err, team) => {
                     if (err) reject(err)
                     else resolve(team)
                 })
-            })
+            }).then(team => {
+                return new Promise((resolve, reject) => {
+                    Player.find({ teamId: id }, (err, players) => {
+                        if (err) reject(err)
+                        else resolve(players)
+                    })
+                }).then(players => {
+                    players.forEach(player => {
+                        teamValue += player.value
+                    });
 
-            teamValue = 0;
-            const players = new Promise((resolve, reject) => {
-                Player.find({ teamId: id }, (err, players) => {
-                    if (err) reject(err)
-                    else resolve(players)
+                    return {
+                        "team": team,
+                        "teamValue": teamValue,
+                        "players": players
+                    };
                 })
-            }).then(players => {
-                players.forEach(player => {
-                    teamValue += player.value
-                    console.log(teamValue)
-                })
-            })
-            
-            return {
-                "team": team,
-                "teamValue": teamValue,
-                "players": players
-            };
+            }) 
         },
 
         viewTransferList: (root) => {
